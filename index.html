@@ -335,7 +335,7 @@ td{padding:12px 18px;vertical-align:middle;}
       </div>
     </div>
     <button class="lbtn" id="loginBtn" onclick="doLogin()">Entrar →</button>
-    <div class="lhint">Demo: <code>admin</code> / <code>admin123</code></div>
+
     <div style="text-align:center;margin-top:14px;font-size:.74rem;color:var(--muted);">
       Contacta al administrador para obtener acceso
     </div>
@@ -1744,27 +1744,36 @@ zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('
 function processImage(file) {
   const reader = new FileReader();
   reader.onload = async (e) => {
-    const b64 = e.target.result.split(',')[1], mt = file.type || 'image/jpeg';
+    const b64 = e.target.result.split(',')[1];
+    const mt  = file.type || 'image/jpeg';
     document.getElementById('previewThumb').src = e.target.result;
     document.getElementById('previewThumb').style.display = 'block';
     document.getElementById('spinner').classList.add('show');
     document.getElementById('aiResult').style.display = 'none';
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000,
-          messages: [{ role: 'user', content: [
-            { type: 'image', source: { type: 'base64', media_type: mt, data: b64 } },
-            { type: 'text', text: 'Analiza este comprobante bancario y responde ÚNICAMENTE con JSON sin backticks:\n{"type":"income"o"expense","desc":"descripción","amount":número,"date":"dd/mm/yyyy","ref":"referencia","origin":"entidad","currency":"COP","notes":"adicional"}\n- PAGO REALIZADO=expense, INGRESO/REMESA=income\n- amount en pesos colombianos' }
-          ]}]
-        })
+      // Llamar a la Supabase Edge Function (resuelve CORS)
+      const EDGE_URL = `${SUPA_URL}/functions/v1/analyze-receipt`;
+      const res = await fetch(EDGE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_base64: b64, media_type: mt })
       });
-      const d = await res.json();
-      const txt = d.content?.find(b => b.type === 'text')?.text || '';
-      pendingAI = JSON.parse(txt.replace(/```json|```/g, '').trim());
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${res.status}`);
+      }
+      const json = await res.json();
+      if (!json.success || !json.data) throw new Error('Respuesta inválida de la IA');
+      pendingAI = json.data;
       showAiResult(pendingAI);
-    } catch(err) { toast('Error al analizar la imagen', '❌'); }
-    finally { document.getElementById('spinner').classList.remove('show'); document.getElementById('imgInput').value = ''; }
+    } catch(err) {
+      console.error('AI error:', err);
+      toast('Error al analizar: ' + (err.message || 'intenta de nuevo'), '❌');
+    }
+    finally {
+      document.getElementById('spinner').classList.remove('show');
+      document.getElementById('imgInput').value = '';
+    }
   };
   reader.readAsDataURL(file);
 }
