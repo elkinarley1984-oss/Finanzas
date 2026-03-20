@@ -723,7 +723,7 @@ td{padding:12px 18px;vertical-align:middle;}
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Tipo</th><th>Fecha</th><th>Descripción</th><th>Referencia</th><th>Origen</th><th>Monto</th><th></th></tr></thead>
+          <thead><tr><th>Tipo</th><th>Fecha</th><th>Descripción</th><th>Referencia</th><th>Origen</th><th>Monto</th><th>Por</th><th></th></tr></thead>
           <tbody id="movTable"></tbody>
         </table>
         <div id="movEmpty" class="empty"><div class="empty-icon">📭</div><p>No hay movimientos que coincidan</p></div>
@@ -1179,8 +1179,8 @@ async function loadAll() {
   movements = []; loans = [];
 
   const [movRes, loanRes] = await Promise.all([
-    sb.from('ft_movements').select('*').eq('user_id', currentUser).order('created_at', { ascending: false }),
-    sb.from('ft_loans').select('*').eq('user_id', currentUser).order('created_at', { ascending: false })
+    sb.from('ft_movements').select('*').eq('org_id', 'default').order('created_at', { ascending: false }),
+    sb.from('ft_loans').select('*').eq('org_id', 'default').order('created_at', { ascending: false })
   ]);
 
   if (movRes.data) {
@@ -1191,6 +1191,7 @@ async function loadAll() {
       source: r.source || 'manual', person: r.person || '', note: r.note || '',
       cuotaFija: parseFloat(r.cuota_fija) || 0, rate: parseFloat(r.rate) || 0,
       period: r.period || 'monthly', nQuotas: r.n_quotas || 0,
+      createdBy: r.user_id || '',
     }));
   }
 
@@ -1344,7 +1345,7 @@ function renderDashboard() {
   else { iEmpty.style.display = 'none';
     iTbody.innerHTML = income.slice(0,10).map(t =>
       `<tr><td style="color:var(--muted);font-size:.78rem;">${t.date}</td><td>${t.desc}</td>` +
-      `<td class="ai">${fmt(t.amount)}</td><td><button class="del-btn" onclick="deleteMov('${t.id}')">🗑</button></td></tr>`
+      `<td class="ai">${fmt(t.amount)}</td><td><button class="del-btn" onclick="deleteMov('${t.id}')" style="${currentPerms.role==='admin'?'':'display:none'}">🗑</button></td></tr>`
     ).join(''); }
 
   // Tabla Egresos
@@ -1354,7 +1355,7 @@ function renderDashboard() {
   else { eEmpty.style.display = 'none';
     eTbody.innerHTML = expense.slice(0,10).map(t =>
       `<tr><td style="color:var(--muted);font-size:.78rem;">${t.date}</td><td>${t.desc}</td>` +
-      `<td class="ae">${fmt(t.amount)}</td><td><button class="del-btn" onclick="deleteMov('${t.id}')">🗑</button></td></tr>`
+      `<td class="ae">${fmt(t.amount)}</td><td><button class="del-btn" onclick="deleteMov('${t.id}')" style="${currentPerms.role==='admin'?'':'display:none'}">🗑</button></td></tr>`
     ).join(''); }
 }
 
@@ -1367,7 +1368,7 @@ async function addTransaction(type) {
   if (!desc || isNaN(amount) || amount <= 0) { toast('Completa los campos', '⚠️'); return; }
   const m = { id: uid(), type, desc, amount, date: todayStr(), ref: '', origin: '', source: 'manual' };
   const { error } = await sb.from('ft_movements').insert({
-    id: m.id, user_id: currentUser, type, description: desc, amount, move_date: m.date, source: 'manual'
+    id: m.id, user_id: currentUser, org_id: 'default', type, description: desc, amount, move_date: m.date, source: 'manual'
   });
   if (error) { toast('Error: ' + error.message, '❌'); return; }
   movements.unshift(m);
@@ -1447,7 +1448,8 @@ function renderMovTable(list) {
       <td>${m.ref ? `<span class="ref-code">${m.ref}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
       <td style="color:var(--muted);font-size:.78rem;">${m.origin || '—'}</td>
       <td class="${aCls}">${sign}${fmt(m.amount)}</td>
-      <td><button class="del-btn" onclick="deleteMov('${m.id}')">🗑</button></td>
+      <td style="font-size:.7rem;color:var(--muted);">${m.createdBy || '—'}</td>
+      <td><button class="del-btn" onclick="deleteMov('${m.id}')" style="${currentPerms.role==='admin'?'':'display:none'}">🗑</button></td>
     </tr>`;
   }).join('');
 }
@@ -1547,7 +1549,7 @@ async function addLoanQuick() {
   if (!person || isNaN(amount) || amount <= 0) { toast('Completa los campos', '⚠️'); return; }
   const l = { id: uid(), date: todayStr(), person, amount, type, note, paid: false };
   const { error } = await sb.from('ft_loans').insert({
-    id: l.id, user_id: currentUser, person, amount, loan_type: type, note, paid: false, loan_date: l.date
+    id: l.id, user_id: currentUser, org_id: 'default', person, amount, loan_type: type, note, paid: false, loan_date: l.date
   });
   if (error) { toast('Error: ' + error.message, '❌'); return; }
   loans.unshift(l);
@@ -1613,7 +1615,7 @@ async function saveManual() {
   if (!desc || isNaN(amount) || amount <= 0 || !date) { toast('Completa los campos requeridos', '⚠️'); return; }
   const m = { id: uid(), type, desc, amount, date: isoToDisplay(date), ref, origin, source: 'manual' };
   const { error } = await sb.from('ft_movements').upsert({
-    id: m.id, user_id: currentUser, type, description: desc, amount,
+    id: m.id, user_id: currentUser, org_id: 'default', type, description: desc, amount,
     move_date: m.date, ref, origin, source: 'manual'
   });
   if (error) { toast('Error: ' + error.message, '❌'); return; }
@@ -1712,7 +1714,7 @@ async function saveLoan() {
     origin: 'Préstamo', ref: '', source: 'manual'
   };
   const { error } = await sb.from('ft_movements').upsert({
-    id: m.id, user_id: currentUser, type: 'loan', subtype: direction, description: desc,
+    id: m.id, user_id: currentUser, org_id: 'default', type: 'loan', subtype: direction, description: desc,
     amount: capital, move_date: m.date, person, note, source: 'manual',
     cuota_fija: Math.round(cuotaFija), total_intereses: Math.round(totalInt),
     total_pagar: Math.round(capital + totalInt), rate, period: selPeriod, n_quotas: nQ
@@ -1787,7 +1789,7 @@ async function saveAiMovement() {
     amount: parseFloat(pendingAI.amount) || 0, date: pendingAI.date || todayStr(),
     ref: pendingAI.ref || '', origin: pendingAI.origin || '', source: 'ai' };
   const { error } = await sb.from('ft_movements').upsert({
-    id: m.id, user_id: currentUser, type: m.type, description: m.desc,
+    id: m.id, user_id: currentUser, org_id: 'default', type: m.type, description: m.desc,
     amount: m.amount, move_date: m.date, ref: m.ref, origin: m.origin, source: 'ai'
   });
   if (error) { toast('Error: ' + error.message, '❌'); return; }
@@ -1828,7 +1830,7 @@ async function importExcel(event) {
         for (const r of XLSX.utils.sheet_to_json(wb.Sheets[sheet]||{})) {
           if (r['Descripción'] && r['Monto']) {
             const t = { id: uid(), date: excelDateToStr(r['Fecha']), desc: r['Descripción'], amount: parseFloat(r['Monto'])||0 };
-            await sb.from('ft_movements').insert({ id:t.id, user_id:currentUser, type, description:t.desc, amount:t.amount, move_date:t.date, source:'import' });
+            await sb.from('ft_movements').insert({ id:t.id, user_id:currentUser, org_id:'default', type, description:t.desc, amount:t.amount, move_date:t.date, source:'import' });
             movements.unshift({ ...t, type, ref:'', origin:'', source:'import' });
             count++;
           }
