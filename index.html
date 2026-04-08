@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FinTrack">
+<meta name="application-name" content="FinTrack">
+<meta name="msapplication-TileColor" content="#0a0e1a">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExklEQVR42u3dy5VaMRBAQVJg5wycosNxEE5p4rCdgI8BtaT+1KL38LglCWZ4PJ7fvj+MmTouggHAGACMAcAcfwF+/fjtOgDQJuZT43oDMCJ0MAAQPBAAiB4GAEQPAwCihwEA0cMAQIfw/z4uEABo9fn89gEBgOvhnwg9EwwAhoefMfgbIAAYFH7F6E9hAKBp+J2iP4EBgAbxT4h+JwYAhA9CUQgj4xf8PggACB+EQhBGxC/oOxAAuBy/gO9DAED4ICSGIH4zGkGb+IVZAwIA4ocAgJj4BVgXAgBWfbtBAgjiN6MROPKY0Uci8ZvRCMRvRiNID0BEsxC0ByB+CDIhEL8ZjUD8ZjQC8ZvRCMRvRiNIA0AUELQDIH6THYH4zWgE4jejEQBgABC/mYpA/GY0guMAvMgmAkE6AFZ/U3EXEL8ZjcDRx4w+Cln9zehdwOpvRu8CpeN/fP0sMZ5jXgQAAABA1aMPADMA7EQAAAAAVH3jC8AcALsQAAAAAFU/9gRgFoAdCAAAAICqf/QCYB6AaAQAAABAFIDjfyYHYCSAVxCEA8j4Pz8AALCKoOzqD8BsAFG7AAAAAFD1X54BAGAVQdnVHwAAInYBAAAAoOo3vgAAYPUYVHb1BwCAiF0AAAAAqPqF9y4vYLZrM+mL82VXfwAAiNgFAAAAAAAAAKDgDa8AAGD1fUDZ1R8AACJ2AQAAAAAAAAAAAAAAAAAAgDK3PAcAgNVPgsqu/gAAELELAAAAAAAAAAAAAAAAAAAAjATQDRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPBPAFXiBwCACAR2AADsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgO8G+EzwYgDvDAdD6znDuDQqAm+MCAAAAAAAAAAAAAAAAAAD4lUgAGn0C9PQ7wQD4nWAAAAAAAAAAKPc+AAAAVs7//wWQfRcAAICV1R8AAABYBXATAQAArBx/XgKQeRcAAICV+AEAAIAIALcQADAbwOrx52UAWXcBAABYiR8AAACIAnADAQBzAUQcf94CkHEXAACAlfjDAZxGAMBMAFGrPwAAAPAOgGwIAJgHIDJ+AAAA4F0AmRAAMAtAdPwAAADAJwCyIABgDoAd8QMAAACfAsiAAIAZAHbFDwAAAKwAeBa6lbqZc8vzdAAgMLvivw7ALmCqrv5HAUBgsq3+YQAgMBXjDwXgKGQqHX2uAYDAZFn9wwFAYCrFvwUABKZK/AAYAHYAgMBUiH8rAAhM9vi3A4DAZI4/FQAIxN8SAAQma/zHAEBgMsZ/FAAEJlv8xwFAIP5M8V8BAIH4s8RfAgAEc+IfAwAC8WeI/yoACMR/O/7rAD5BAEKv8G/GnwIABOIfD8CRyJEHALuBVR8ACMQPwMcIQMgbfsb4UwOAQPzjAYAgfAAWEYBwJ/wK8ZcCsIoAhHPhV4m/HAAQhA9AEAIQYsOvGH9pACAIH4BABJMwBF+vBwANIXTDsOHa9GimE4BdEKpi2HQderXSEcBOCJlBbH6+PRvpDOAEhBswDj+f3m1MAHADwjtgkj6uGU1MApAZgvABgEH0AMAgegBgED0AMIgeACAEDwAYQgegMRrXAQBjADAGAGMOzh/XB2EToBmBTAAAAABJRU5ErkJggg==">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExklEQVR42u3dy5VaMRBAQVJg5wycosNxEE5p4rCdgI8BtaT+1KL38LglCWZ4PJ7fvj+MmTouggHAGACMAcAcfwF+/fjtOgDQJuZT43oDMCJ0MAAQPBAAiB4GAEQPAwCihwEA0cMAQIfw/z4uEABo9fn89gEBgOvhnwg9EwwAhoefMfgbIAAYFH7F6E9hAKBp+J2iP4EBgAbxT4h+JwYAhA9CUQgj4xf8PggACB+EQhBGxC/oOxAAuBy/gO9DAED4ICSGIH4zGkGb+IVZAwIA4ocAgJj4BVgXAgBWfbtBAgjiN6MROPKY0Uci8ZvRCMRvRiNID0BEsxC0ByB+CDIhEL8ZjUD8ZjQC8ZvRCMRvRiNIA0AUELQDIH6THYH4zWgE4jejEQBgABC/mYpA/GY0guMAvMgmAkE6AFZ/U3EXEL8ZjcDRx4w+Cln9zehdwOpvRu8CpeN/fP0sMZ5jXgQAAABA1aMPADMA7EQAAAAAVH3jC8AcALsQAAAAAFU/9gRgFoAdCAAAAICqf/QCYB6AaAQAAABAFIDjfyYHYCSAVxCEA8j4Pz8AALCKoOzqD8BsAFG7AAAAAFD1X54BAGAVQdnVHwAAInYBAAAAoOo3vgAAYPUYVHb1BwCAiF0AAAAAqPqF9y4vYLZrM+mL82VXfwAAiNgFAAAAAAAAAKDgDa8AAGD1fUDZ1R8AACJ2AQAAAAAAAAAAAAAAAAAAgDK3PAcAgNVPgsqu/gAAELELAAAAAAAAAAAAAAAAAAAAjATQDRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPBPAFXiBwCACAR2AADsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgO8G+EzwYgDvDAdD6znDuDQqAm+MCAAAAAAAAAAAAAAAAAAD4lUgAGn0C9PQ7wQD4nWAAAAAAAAAAKPc+AAAAVs7//wWQfRcAAICV1R8AAABYBXATAQAArBx/XgKQeRcAAICV+AEAAIAIALcQADAbwOrx52UAWXcBAABYiR8AAACIAnADAQBzAUQcf94CkHEXAACAlfjDAZxGAMBMAFGrPwAAAPAOgGwIAJgHIDJ+AAAA4F0AmRAAMAtAdPwAAADAJwCyIABgDoAd8QMAAACfAsiAAIAZAHbFDwAAAKwAeBa6lbqZc8vzdAAgMLvivw7ALmCqrv5HAUBgsq3+YQAgMBXjDwXgKGQqHX2uAYDAZFn9wwFAYCrFvwUABKZK/AAYAHYAgMBUiH8rAAhM9vi3A4DAZI4/FQAIxN8SAAQma/zHAEBgMsZ/FAAEJlv8xwFAIP5M8V8BAIH4s8RfAgAEc+IfAwAC8WeI/yoACMR/O/7rAD5BAEKv8G/GnwIABOIfD8CRyJEHALuBVR8ACMQPwMcIQMgbfsb4UwOAQPzjAYAgfAAWEYBwJ/wK8ZcCsIoAhHPhV4m/HAAQhA9AEAIQYsOvGH9pACAIH4BABJMwBF+vBwANIXTDsOHa9GimE4BdEKpi2HQderXSEcBOCJlBbH6+PRvpDOAEhBswDj+f3m1MAHADwjtgkj6uGU1MApAZgvABgEH0AMAgegBgED0AMIgeACAEDwAYQgegMRrXAQBjADAGAGMOzh/XB2EToBmBTAAAAABJRU5ErkJggg==">
+<link rel="manifest" href="data:application/manifest+json,{}" id="pwa-manifest-placeholder">
+
 <title>FinTrack — Control Financiero</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -306,8 +317,8 @@ td{padding:12px 18px;vertical-align:middle;}
 
 /* ═══ RESPONSIVE ══════════════════════════════════════ */
 @media(max-width:1100px){.summary-grid{grid-template-columns:repeat(2,1fr);}.panels{grid-template-columns:1fr;}.panel.full{grid-column:auto;}}
-@media(max-width:900px){main{padding:16px 18px;}header{padding:14px 18px;}.stats-row{grid-template-columns:repeat(2,1fr);}.tab-nav{padding:0 18px;}.filter-bar{flex-direction:column;align-items:stretch;}.filter-actions{margin-left:0;}.ai-fields{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){.summary-grid{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:1fr 1fr;}.modal-grid{grid-template-columns:1fr;}.loan-form{grid-template-columns:1fr;}.add-form{grid-template-columns:1fr;}}
+@media(max-width:900px){main{padding:16px 18px;}header{padding:14px 18px;}.stats-row{grid-template-columns:repeat(2,1fr)!important;}.tab-nav{padding:0 18px;}.filter-bar{flex-direction:column;align-items:stretch;}.filter-actions{margin-left:0;}.ai-fields{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.summary-grid{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:1fr!important;}.modal-grid{grid-template-columns:1fr;}.loan-form{grid-template-columns:1fr;}.add-form{grid-template-columns:1fr;}.card-amount{font-size:1.4rem;}.stat-value{font-size:1.2rem;}}
 </style>
 </head>
 <body>
@@ -618,26 +629,7 @@ td{padding:12px 18px;vertical-align:middle;}
   ═══════════════════════════════════════════ -->
   <div id="tab-movimientos" class="tab-page">
 
-    <!-- UPLOAD COMPROBANTE -->
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" id="imgInput" accept="image/*" onchange="handleImages(event)">
-      <div style="font-size:2rem;margin-bottom:7px;">🧾</div>
-      <div style="font-weight:600;font-size:.95rem;margin-bottom:3px;">Sube tu comprobante</div>
-      <div style="font-size:.78rem;color:var(--muted);">Arrastra una imagen o haz clic — la IA extrae los datos automáticamente</div>
-    </div>
-    <div class="spinner" id="spinner"><div class="spin"></div>Analizando con IA...</div>
-    <div class="ai-result" id="aiResult">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-        <span style="background:rgba(0,229,160,.12);color:var(--accent);padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;">✨ Extraído por IA</span>
-        <span style="font-family:'Playfair Display',serif;font-size:1rem;" id="aiTitle">Datos del comprobante</span>
-      </div>
-      <img class="preview-thumb" id="previewThumb" alt="">
-      <div class="ai-fields" id="aiFields"></div>
-      <div style="display:flex;gap:9px;">
-        <button class="btn btn-accent" onclick="saveAiMovement()">✅ Guardar</button>
-        <button class="btn btn-ghost" onclick="closeAi()">Descartar</button>
-      </div>
-    </div>
+
 
     <!-- FILTERS -->
     <div class="filter-bar">
@@ -2042,5 +2034,133 @@ function exportFiltered() {
 
 document.getElementById('fSearch').addEventListener('keydown', e => { if (e.key === 'Enter') applyFilters(); });
 </script>
+
+<script>
+// ═══════════════════════════════════════════════════
+// PWA — MANIFEST + SERVICE WORKER
+// ═══════════════════════════════════════════════════
+(function() {
+  // Íconos embebidos en base64
+  const ICON_192 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAExklEQVR42u3dy5VaMRBAQVJg5wycosNxEE5p4rCdgI8BtaT+1KL38LglCWZ4PJ7fvj+MmTouggHAGACMAcAcfwF+/fjtOgDQJuZT43oDMCJ0MAAQPBAAiB4GAEQPAwCihwEA0cMAQIfw/z4uEABo9fn89gEBgOvhnwg9EwwAhoefMfgbIAAYFH7F6E9hAKBp+J2iP4EBgAbxT4h+JwYAhA9CUQgj4xf8PggACB+EQhBGxC/oOxAAuBy/gO9DAED4ICSGIH4zGkGb+IVZAwIA4ocAgJj4BVgXAgBWfbtBAgjiN6MROPKY0Uci8ZvRCMRvRiNID0BEsxC0ByB+CDIhEL8ZjUD8ZjQC8ZvRCMRvRiNIA0AUELQDIH6THYH4zWgE4jejEQBgABC/mYpA/GY0guMAvMgmAkE6AFZ/U3EXEL8ZjcDRx4w+Cln9zehdwOpvRu8CpeN/fP0sMZ5jXgQAAABA1aMPADMA7EQAAAAAVH3jC8AcALsQAAAAAFU/9gRgFoAdCAAAAICqf/QCYB6AaAQAAABAFIDjfyYHYCSAVxCEA8j4Pz8AALCKoOzqD8BsAFG7AAAAAFD1X54BAGAVQdnVHwAAInYBAAAAoOo3vgAAYPUYVHb1BwCAiF0AAAAAqPqF9y4vYLZrM+mL82VXfwAAiNgFAAAAAAAAAKDgDa8AAGD1fUDZ1R8AACJ2AQAAAAAAAAAAAAAAAAAAgDK3PAcAgNVPgsqu/gAAELELAAAAAAAAAAAAAAAAAAAAjATQDRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPBPAFXiBwCACAR2AADsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgO8G+EzwYgDvDAdD6znDuDQqAm+MCAAAAAAAAAAAAAAAAAAD4lUgAGn0C9PQ7wQD4nWAAAAAAAAAAKPc+AAAAVs7//wWQfRcAAICV1R8AAABYBXATAQAArBx/XgKQeRcAAICV+AEAAIAIALcQADAbwOrx52UAWXcBAABYiR8AAACIAnADAQBzAUQcf94CkHEXAACAlfjDAZxGAMBMAFGrPwAAAPAOgGwIAJgHIDJ+AAAA4F0AmRAAMAtAdPwAAADAJwCyIABgDoAd8QMAAACfAsiAAIAZAHbFDwAAAKwAeBa6lbqZc8vzdAAgMLvivw7ALmCqrv5HAUBgsq3+YQAgMBXjDwXgKGQqHX2uAYDAZFn9wwFAYCrFvwUABKZK/AAYAHYAgMBUiH8rAAhM9vi3A4DAZI4/FQAIxN8SAAQma/zHAEBgMsZ/FAAEJlv8xwFAIP5M8V8BAIH4s8RfAgAEc+IfAwAC8WeI/yoACMR/O/7rAD5BAEKv8G/GnwIABOIfD8CRyJEHALuBVR8ACMQPwMcIQMgbfsb4UwOAQPzjAYAgfAAWEYBwJ/wK8ZcCsIoAhHPhV4m/HAAQhA9AEAIQYsOvGH9pACAIH4BABJMwBF+vBwANIXTDsOHa9GimE4BdEKpi2HQderXSEcBOCJlBbH6+PRvpDOAEhBswDj+f3m1MAHADwjtgkj6uGU1MApAZgvABgEH0AMAgegBgED0AMIgeACAEDwAYQgegMRrXAQBjADAGAGMOzh/XB2EToBmBTAAAAABJRU5ErkJggg==';
+  const ICON_512 = 'data:image/png;base64,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MPdmmeArgACwCAUA5t4sIwAEgEUoADD3ZhkB4PhbhJYm5t4sszICBIBFKAAw92YZASAALEIBgLk3ywgAAWARWpqYe7NMOwD89/8tQksTc2+W2fO/B+Dr3yIUAJh7s0zwFUAAWIQCAHNvlhEAAsAiFACYe7OMABAAFqGlibk3y3QDwPG3CC1NzL1ZZlcECACLUABg7s0yAkAAWIQCAHNvlhEAAsAitDQx92YZASAALEJLE3NvlokEgONvEVqamHuzzL4IEAAWoQDA3JtlBIAAsAgFAObeLCMABIBFaGli7s0yAkAAWISWJubeLCMABIBFaGli7s0yGwPA8bcILU3MvVlmZwQIAItQAGDuzTICQABYhAIAc2+WEQACwCK0NDH3ZhkBIAAsQksTc2+WEQD+4C1CSxNzb5YRAFiElibm3ixzfQA4/hahpYm5N8vsjQABYBEKAMy9WUYACACLUABg7s0yAkAAWISWJubeLCMABIBFaGli7s0yAgCL0NLE3JtlBAAWoaWJuTfLCAAsQksTc2+WEQBYhJYm5t4sMzwAHH+L0NLE3JtldkeAALAIBQDm3iwjAASARYgFb+7NBwJAAFiEWPDm3nwgAASARYgFb+7NBwIAixAL3tybDwQAFiEWvLk3HwgALEIseHNvPhAAWIQCAHNvPhAAWIQCAHNvPhAAWIQCAAEAAgABIAAQACAAEAACAAEAAgABIAAQACAAEAAWPAIABAACwIJHACAABAACwII39+YDASAALEIseHNvPhAAAsAixII39+YDASAALEIseHNvPhAAAsAixII39+YDASAALEIseHNvPtgbAI6/RYgFb+7NB/sjwAuARYgFb+7NB14ABIBFiAVv7s0HAkAAWIRY8ObefCAABIBFiAVv7s0HAgCLEAve3JsPBAAWIRa8uTcfCAAsQix4c28+EABYhAIAc28+EABYhAIAc28+EABYhAIAAQACAAEgABAAIAAQAAIAAQACAAEgABAAIAAQABY8AgAEAALAgkcAIAAEAALAgjf35gMBIAAsQix4c28+EAACwCLEgjf35gMBIAAsQix4c28+EAACwCLEgjf35gMBIAAsQix4c28+EABYhFjw5t58sCwARIBFiAVv7s0He4+/ALAIseDNvflAAAgAixAL3tybDwSAALAIseDNvflAAAgAixAL3tybDwSAP3CLEAve3JsPBAAWIRa8uTcfCAAsQix4c28+EABYhJYm5t4sc0kAiACL0NLE3Jtldh5/AWARCgDMvVlGAAgAi1AAYO7NMgJAAFiElibm3iwjAASARWhpYu7NMgJAAFiElibm3iwjALAILU3MvVlmTQCIAIvQ0sTcm2X2HX8BYBEKAMy9WUYACACLUABg7s0yAkAAWISWJubeLCMABIBFaGli7s0yAkAAWISWJubeLLM5AESARWhpYu7NMruOvwCwCAUA5t4sIwAEgEUoADD3ZhkBIAAsQksTc2+WEQACwCK0NDH3ZplYAIgAi9DSxNybZfYcfwFgEQoAzL1ZRgAIAItQAGDuzTICQABYhJYm5t4sIwD+939MBFiElibm3ixz/vg/HgBeASxCSxNzb5bZ8fUvACxCAYC5N8sIAAFgEQoAzL1ZRgAIAIvQ0sTcm2UEgAiwCC1NzL1ZZsfxFwAWoQDA3JtlBIAAsAgFAObeLCMA/O8BWISWJubeLLPuv///6QDwCmARWpqYe7PM3V//AsAiFACYe7OMABAAFqEAwNybZQSAfwdgEVqamHuzzMrf/z8dAF4BLEJLE3Nvlrn3618AWIQCAHNvlhEAAsAiFACYe7OMAPDvACxCSxNzb5ZZ+fv/lwLAK4BFaGli7s0yd379CwCLUABg7s0yAsDPABahAMDcm2UKz/9fDgCvABahpYm5N8vc9/UvACxCAYC5N8sIAD8DWIQCAHNvlik8/z8SAF4BLEJLE3Nvlrnr618AWIQCAHNvlhEAfgawCAUA5t4sU3j+fywAvAJYhJYm5t4sc8/XvwCwCAUA5t4sIwD8DGARCgDMvVmm8Pz/aAB4BbAILU3MvVnmjq9/AWARCgDMvVlGAPgZwCIUAJh7s0zh+f/xAPAKYBFamph7s8z8r/8jASACLEJLE3Nvljn79S8ALEIBgLk3ywgAPwNYhAIAc2+WKTz/HwsAEWARWpqYe7PMua//bwsArwAWoaWJuTfLzP36PxoAIsAitDQx92aZM1//AsAiFACYe7OMAPAzgEUoADD3ZpnC8//xABABFqGlibk3y47/wgDwCmARWpqYe7PMvK//EQEgAixCSxMB4D8nx18AIAAsTQQAAmBDAPgZwCK0NDH3ZplZz/9jAkAEWISWJgIAx39hAHgFsAgtTcy9WWbO1/+oABABFqGliQDA8V8YAF4BLEJLE3Nvlpnx9T8uAESARWhpIgDw9S8AEACWJgIAAbAhAESARWhpYu7NsuN//vgLAItQAGDuzTICQARYhAIAc2+WKRx/AWARCgDMvVlGAIgAi1AAYO7NMoXjLwAsQgGAuTfLCAARYBEKAMy9WaZw/AWARSgAMPdmGQEgAixCAYC5N8sUjr8AsAgFAObeLCMARAAAFI6/AAAAASACAKBw/AUAAAgAEQAAheN/ZQCIAABuPf4CwCsAAL7+BYAIAMDxFwACAAABUAwAEQCA4y8ARAAA/uFfJQC8AgDg618AiAAAfP1XAsArAAC+/qMBIAIAcPwFgAgAwNN/JQC8AgDg618AiAAAfP1XAkAEAOD4RwPATwEAePoXACIAAF//lQAQAQA4/tEA8FMAAJ7+BYAIAMDXfyUARAAAjn80APwUAICnfwEgAgDw9V8JABEAgOMfDQARAIDjLwAEAAACoBIAIgAAxz8aACIAAMc/GgAiAADHXwAIAAAEQCUARAAAjn80AEQAAI5/NABEAACOvwAQAAAIgEoAiAAAHP9oAIgAABz/aACIAADH3/EXACIAwPEXACJABAA4/p3jnwwAPwUACID68c8GgAgAcPzLxz8dACIAwPGvHn8B4N8DAPjdXwCIABEA4PgLABEgAgAcfwEgAkQAgOMvAESAv2wAjr8AEAEAOP4CQAQA4PgLABEAgOMvAAQAAAJAAIgAABx/ASACAHD8BYAIAMDxFwAiAMDxd/wFgAgAcPwdfwEwLAKEAMDrDr/jLwBEAIDjjwAQAQCOPwJABAA4/ggAEQDg+AsARACA4y8AEAEAjr8AQAQAOP4CABEA4PgLAEQAgOMvAETA+4cQAPj64Xf8BYDXAABf/QgAEQDg+CMARACA448AEAEAjj8CwD8OBPCP/RAAIgDA8RcAiAAAx18AIAQAHH4BgAgAcPwFACIAwPEXAByOACEA3HT4HX8BgNcAwFc/AgARADj+CAD8JAB48kcACAERAPjqRwCIACEA+OpHAIgAEQA4/ggAISAEAIcfASACRADg+CMARIAQAB48/I6/AMBrAOCrHwGA1wDAVz8CACEAOPwIAEQA4PgjABACgMOPAGBKBAgBaB9+x18A4DUA8NWPAMBrAOCrHwGAEAAcfgQAQgBw+BEALI8AIQD3Hn7HXwCAEACHHwGAEBAC4PAjABACQgAcfgQAIkAIwD2H3/FHACAEwOEHAYAQAIcfAQAHQkAMwHNH3+FHACAEwOEHAcBdISAGcPQdfgQAQgAcfocfAUA1BMQAjr7DjwBACIDDDwIAMQCOPggAkiEgBthy9B1+BABCQAwQOvoOPwIAMSAGcPRBACAExADbjr7DjwCAgzEgCHjlwXf0EQAwMAQEgYPv8CMAQAyIAUff0UcAgBgQBY69o48AADEgCBx8Rx8BAGJAFHSOvaOPAAAxIAwCh97RRwCAGBAHgSPv6CMAQBCIhOXH3cEHAQBXBsGTYRH+/93sIwAAQeDggwAABIGDDwIAEAWOPQgAQBQ49iAAAGHg0IMAAMSBIw8CAKhGgv/cQAAAg8PCnwMIAABAAAAAAgAAWOMfoItZJgy84CAAAAAASUVORK5CYII=';
+
+  // Inyectar manifest dinámico
+  const manifest = {
+    name: 'FinTrack — Control Financiero',
+    short_name: 'FinTrack',
+    description: 'Gestión de ingresos, egresos y préstamos personales',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#0a0e1a',
+    theme_color: '#0a0e1a',
+    orientation: 'any',
+    icons: [
+      { src: ICON_192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: ICON_512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+    ]
+  };
+
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel   = 'manifest';
+  link.href  = url;
+  // Quitar el placeholder
+  const old = document.getElementById('pwa-manifest-placeholder');
+  if (old) old.remove();
+  document.head.appendChild(link);
+
+  // ── Service Worker inline ──────────────────────────────
+  const SW_CODE = `
+const CACHE = 'fintrack-v1';
+const ASSETS = [self.location.href];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+      if (res.ok) {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return res;
+    }).catch(() => cached))
+  );
+});
+`;
+
+  if ('serviceWorker' in navigator) {
+    const swBlob = new Blob([SW_CODE], {type: 'application/javascript'});
+    const swUrl  = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl, {scope: '.'})
+      .then(r => console.log('SW registrado:', r.scope))
+      .catch(e => console.warn('SW error:', e));
+  }
+
+  // ── Botón de instalación ──────────────────────────────
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallBtn();
+  });
+  window.addEventListener('appinstalled', () => {
+    hideInstallBtn();
+    deferredPrompt = null;
+    if(typeof toast === 'function') toast('¡FinTrack instalado! 🎉');
+  });
+
+  function showInstallBtn() {
+    let btn = document.getElementById('pwa-install-btn');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'pwa-install-btn';
+      btn.innerHTML = '📲 Instalar app';
+      btn.style.cssText = [
+        'position:fixed;bottom:26px;left:26px;z-index:500',
+        'background:linear-gradient(135deg,#00e5a0,#4da6ff)',
+        'color:#0a0e1a;font-family:DM Sans,sans-serif',
+        'font-size:.82rem;font-weight:700;border:none',
+        'border-radius:22px;padding:10px 20px',
+        'cursor:pointer;box-shadow:0 4px 20px rgba(0,229,160,.4)',
+        'transition:all .2s;animation:pwaSlide .4s ease'
+      ].join(';');
+      btn.onmouseenter = () => btn.style.transform = 'translateY(-2px)';
+      btn.onmouseleave = () => btn.style.transform = '';
+      btn.onclick = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') hideInstallBtn();
+        deferredPrompt = null;
+      };
+      // Inyectar keyframe si no existe
+      if (!document.getElementById('pwa-style')) {
+        const s = document.createElement('style');
+        s.id = 'pwa-style';
+        s.textContent = '@keyframes pwaSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}';
+        document.head.appendChild(s);
+      }
+      document.body.appendChild(btn);
+    }
+    btn.style.display = 'block';
+  }
+
+  function hideInstallBtn() {
+    const btn = document.getElementById('pwa-install-btn');
+    if (btn) btn.style.display = 'none';
+  }
+})();
+</script>
+
 </body>
 </html>
