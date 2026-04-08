@@ -692,7 +692,7 @@ td{padding:12px 18px;vertical-align:middle;}
     </div>
 
     <!-- STATS -->
-    <div class="stats-row">
+    <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
       <div class="stat-card s-income">
         <div class="stat-label">Ingresos período</div>
         <div class="stat-value sv-g" id="sIncome">$0</div>
@@ -712,6 +712,12 @@ td{padding:12px 18px;vertical-align:middle;}
         <div class="stat-label">Balance período</div>
         <div class="stat-value" id="sNet">$0</div>
         <div class="stat-sub" id="sNetLabel">–</div>
+      </div>
+      <div class="stat-card" style="position:relative;border:1px solid rgba(77,166,255,.35);background:rgba(77,166,255,.06);">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--blue));border-radius:0 0 12px 12px;"></div>
+        <div class="stat-label" style="color:var(--blue);">💡 Balance Real</div>
+        <div class="stat-value" id="sRealNet" style="color:var(--blue);">$0</div>
+        <div class="stat-sub" id="sRealNetLabel">Balance − Préstamos activos</div>
       </div>
     </div>
 
@@ -1199,7 +1205,9 @@ async function loadAll() {
     loans = loanRes.data.map(r => ({
       id: r.id, date: r.loan_date || todayStr(),
       person: r.person, amount: parseFloat(r.amount) || 0,
-      type: r.loan_type, note: r.note || '', paid: r.paid || false
+      type: r.loan_type, note: r.note || '', paid: r.paid || false,
+      paidAt: r.paid_at || null, paidBy: r.paid_by || null,
+      incomeMovId: r.income_movement_id || null
     }));
   }
 
@@ -1288,14 +1296,16 @@ function renderDashboard() {
 
   // Filtrar movimientos (ingresos y egresos)
   const filtMovs = applyDateFilter(movements, month, year, type);
-  const income  = filtMovs.filter(m => m.type === 'income');
-  const expense = filtMovs.filter(m => m.type === 'expense');
+  const income  = filtMovs.filter(m => m.type === 'income'  && m.source !== 'loan_payment');
+  const expense = filtMovs.filter(m => m.type === 'expense' && m.source !== 'loan_payment');
 
   // Unificar TODOS los préstamos: ft_loans + ft_movements tipo loan
   const loanMovs = movements.filter(m => m.type === 'loan').map(m => ({
     id: m.id, date: m.date, person: m.person || m.desc,
     amount: m.amount, type: m.subtype || 'lent',
-    note: m.note || '', paid: false, _src: 'ft_movements',
+    note: m.note || '',
+    paid: !!(m.note && m.note.startsWith('SALDADO|')),
+    _src: 'ft_movements',
     cuotaFija: m.cuotaFija, nQuotas: m.nQuotas, rate: m.rate
   }));
   const allLoans = [
@@ -1312,8 +1322,10 @@ function renderDashboard() {
   const tE  = expense.reduce((s, m) => s + m.amount, 0);
   const tL  = activeLoans.reduce((s, l) => s + l.amount, 0);
   const tLS = saldadoLoans.reduce((s, l) => s + l.amount, 0);
-  // Balance = Ingresos − Egresos − Préstamos activos + Préstamos saldados
-  const net = tI - tE - tL + tLS;
+  // Balance Neto Real = Ingresos − Egresos − Préstamos activos
+  // Los préstamos activos son deudas pendientes que afectan el neto real.
+  // Los préstamos saldados ya generan un movimiento en ft_movements (incluido en tI/tE).
+  const net = tI - tE - tL;
 
   document.getElementById('d-totalIncome').textContent  = fmt(tI);
   document.getElementById('d-totalExpense').textContent = fmt(tE);
@@ -1330,8 +1342,7 @@ function renderDashboard() {
     `<span style="color:var(--muted)">−</span> ` +
     `<span style="color:var(--expense)">${fmt(tE)}</span> ` +
     `<span style="color:var(--muted)">−</span> ` +
-    `<span style="color:var(--loan)">${fmt(tL)}</span>` +
-    (tLS > 0 ? ` <span style="color:var(--muted)">+</span> <span style="color:var(--accent)">${fmt(tLS)}</span>` : '');
+    `<span style="color:var(--loan)">${fmt(tL)}</span>`;
 
   const bs = document.getElementById('d-balanceStatus');
   if (net > 0) { bs.textContent = '✅ Superávit'; bs.style.color = 'var(--accent)'; }
@@ -1455,17 +1466,18 @@ function renderMovTable(list) {
 }
 
 function renderMovStats(list) {
-  const inc = list.filter(m => m.type === 'income');
-  const exp = list.filter(m => m.type === 'expense');
-  // Préstamos activos = ft_loans sin pagar + ft_movements tipo loan
+  const inc = list.filter(m => m.type === 'income'  && m.source !== 'loan_payment');
+  const exp = list.filter(m => m.type === 'expense' && m.source !== 'loan_payment');
+  // Préstamos activos = ft_loans sin pagar + ft_movements tipo loan sin saldar
   const activeL  = loans.filter(l => !l.paid);
-  const loanMovs = movements.filter(m => m.type === 'loan');
+  const loanMovs = movements.filter(m => m.type === 'loan' && !(m.note && m.note.startsWith('SALDADO|')));
   const totalLoanAmt = activeL.reduce((s,l) => s + l.amount, 0)
                      + loanMovs.reduce((s,m) => s + m.amount, 0);
   const totalLoanCnt = activeL.length + loanMovs.length;
   const tI = inc.reduce((s, m) => s + m.amount, 0);
   const tE = exp.reduce((s, m) => s + m.amount, 0);
   const net = tI - tE;
+  const realNet = net - totalLoanAmt;
 
   document.getElementById('sIncome').textContent = fmt(tI);
   document.getElementById('sExpense').textContent = fmt(tE);
@@ -1475,8 +1487,15 @@ function renderMovStats(list) {
   document.getElementById('sExpenseCount').textContent = exp.length + ' mov.';
   document.getElementById('sLoansCount').textContent = totalLoanCnt + ' activos';
   const el = document.getElementById('sNet'), lbl = document.getElementById('sNetLabel');
-  if (net >= 0) { el.className = 'stat-value sv-g'; lbl.textContent = '✅ Superávit'; }
-  else { el.className = 'stat-value sv-r'; lbl.textContent = '⚠️ Déficit'; }
+  if (net >= 0) { el.className = 'stat-value sv-g'; lbl.textContent = '\u2705 Superávit'; }
+  else { el.className = 'stat-value sv-r'; lbl.textContent = '\u26a0\ufe0f Déficit'; }
+
+  // Balance Real = Balance período − Préstamos activos
+  const elR = document.getElementById('sRealNet');
+  const lblR = document.getElementById('sRealNetLabel');
+  elR.textContent = fmt(Math.abs(realNet));
+  if (realNet >= 0) { elR.style.color = 'var(--accent)'; lblR.textContent = '\u2705 ' + fmt(net) + ' − ' + fmt(totalLoanAmt); }
+  else { elR.style.color = 'var(--expense)'; lblR.textContent = '\u26a0\ufe0f Déficit real · ' + fmt(net) + ' − ' + fmt(totalLoanAmt); }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1490,7 +1509,8 @@ function renderLoans() {
   const loanMovs = movements.filter(m => m.type === 'loan').map(m => ({
     id: m.id, date: m.date, person: m.person || m.desc,
     amount: m.amount, type: m.subtype || 'lent',
-    note: m.note || '', paid: false,
+    note: m.note || '',
+    paid: !!(m.note && m.note.startsWith('SALDADO|')),
     cuotaFija: m.cuotaFija, nQuotas: m.nQuotas, rate: m.rate,
     _src: 'ft_movements'
   }));
@@ -1521,13 +1541,17 @@ function renderLoans() {
       ? `<div style="font-size:.7rem;color:var(--loan);">${fmt(l.cuotaFija)} · ${l.nQuotas} cuotas · ${l.rate}%</div>`
       : '—';
     const canToggle = l._src === 'ft_loans';
-    const statusBtn = canToggle
-      ? `<button class="status-btn" onclick="toggleLoan('${l.id}')"
-           style="${l.paid
-             ? 'border-color:var(--accent);color:var(--accent)'
-             : 'border-color:var(--loan);color:var(--loan)'}">
-           ${l.paid ? '✓ Saldado' : '⏳ Pendiente'}</button>`
-      : `<span style="font-size:.72rem;background:rgba(255,217,61,.1);color:var(--loan);padding:3px 8px;border-radius:6px;">Con cuotas</span>`;
+    const paidInfo = l.paid && l.paidAt
+      ? `<div style="font-size:.68rem;color:var(--muted);margin-top:3px;">📅 ${new Date(l.paidAt).toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})}${l.paidBy?' · '+l.paidBy:''}</div>`
+      : '';
+    const traceBadge = l.paid && l.incomeMovId
+      ? `<div style="font-size:.68rem;color:var(--accent);margin-top:2px;">✅ Ingreso registrado</div>`
+      : (l.paid ? `<div style="font-size:.68rem;color:var(--muted);margin-top:2px;">Sin ingreso previo</div>` : '');
+    const statusBtn = `<button class="status-btn" onclick="toggleLoanUnified('${l.id}','${l._src}')"
+         style="${l.paid
+           ? 'border-color:var(--accent);color:var(--accent)'
+           : 'border-color:var(--loan);color:var(--loan)'}">
+         ${l.paid ? '✓ Saldado' : '⏳ Pendiente'}</button>`;
     return `<tr style="${l.paid ? 'opacity:.5;text-decoration:line-through' : ''}">
       <td style="color:var(--muted);font-size:.78rem;white-space:nowrap;">${l.date}</td>
       <td style="font-weight:500;">${l.person}</td>
@@ -1558,18 +1582,171 @@ async function addLoanQuick() {
   toast('Préstamo registrado ☁️');
 }
 
+// ── Saldar/reactivar — funciona para ft_loans Y ft_movements tipo loan ──
+async function toggleLoanUnified(id, src) {
+  if (src === 'ft_loans') {
+    // Usar la función original de ft_loans
+    await toggleLoan(id);
+    return;
+  }
+
+  // Es un préstamo con simulador (ft_movements tipo loan)
+  const mov = movements.find(m => m.id === id);
+  if (!mov) return;
+
+  const newPaid = !mov.paid;
+
+  if (newPaid) {
+    // SALDAR:
+    // • lent    (presté yo)      → crea INGRESO al cobrar
+    // • borrowed (me prestaron)  → crea EGRESO al devolver (evita doble conteo en neto)
+    const movId = uid();
+    const fechaHoy = todayStr();
+    const isBorrowed = mov.subtype === 'borrowed';
+    const movType    = isBorrowed ? 'expense' : 'income';
+    const tipoTexto  = isBorrowed ? 'Pago préstamo devuelto' : 'Cobro préstamo';
+    const descripcion = `${tipoTexto} — ${mov.person || mov.desc}${mov.note ? ' · ' + mov.note : ''}`;
+
+    const { error: movErr } = await sb.from('ft_movements').insert({
+      id: movId,
+      user_id: currentUser,
+      org_id: 'default',
+      type: movType,
+      description: descripcion,
+      amount: mov.amount,
+      move_date: fechaHoy,
+      origin: 'Préstamo saldado',
+      ref: `LOAN-${id.slice(-8).toUpperCase()}`,
+      source: 'loan_payment',
+      note: `Préstamo original: ${fmt(mov.amount)} · Fecha: ${mov.date}`
+    });
+    if (movErr) { toast('Error: ' + movErr.message, '❌'); return; }
+
+    // Marcar el movimiento loan como saldado via nota interna
+    await sb.from('ft_movements').update({ note: 'SALDADO|' + movId }).eq('id', id);
+
+    // Agregar al estado local
+    const newMov = {
+      id: movId, type: movType, desc: descripcion,
+      amount: mov.amount, date: fechaHoy,
+      origin: 'Préstamo saldado',
+      ref: `LOAN-${id.slice(-8).toUpperCase()}`,
+      source: 'loan_payment', createdBy: currentUser
+    };
+    movements.unshift(newMov);
+    filtered.unshift(newMov);
+    mov.paid = true;
+    mov.note = 'SALDADO|' + movId;
+    const toastMsg2 = isBorrowed
+      ? `✅ Préstamo saldado — Egreso de ${fmt(mov.amount)} registrado en movimientos`
+      : `✅ Préstamo saldado — Ingreso de ${fmt(mov.amount)} registrado en movimientos`;
+    toast(toastMsg2);
+
+  } else {
+    // REACTIVAR: buscar y eliminar el ingreso relacionado
+    const saldadoRef = mov.note?.startsWith('SALDADO|') ? mov.note.split('|')[1] : null;
+    if (saldadoRef) {
+      await sb.from('ft_movements').delete().eq('id', saldadoRef);
+      movements = movements.filter(m => m.id !== saldadoRef);
+      filtered  = filtered.filter(m => m.id !== saldadoRef);
+    }
+    await sb.from('ft_movements').update({ note: mov.note?.replace(/^SALDADO\|[^\|]+\|?/, '') || '' }).eq('id', id);
+    mov.paid = false;
+    mov.note = '';
+    toast('↺ Préstamo reactivado');
+  }
+
+  renderLoans();
+  renderDashboard();
+  renderMovTable(filtered);
+  renderMovStats(filtered);
+}
+
 async function toggleLoan(id) {
   const l = loans.find(x => x.id === id);
   if (!l) return;
   const newPaid = !l.paid;
-  const { error } = await sb.from('ft_loans').update({ paid: newPaid }).eq('id', id);
-  if (error) { toast('Error al actualizar', '❌'); return; }
-  l.paid = newPaid;
+
+  if (newPaid) {
+    // ── SALDAR ──
+    // • lent    (presté yo)      → al cobrar, se registra un INGRESO
+    // • borrowed (me prestaron)  → al pagar, se registra un EGRESO (no un ingreso doble)
+    const movId = uid();
+    const fechaHoy = todayStr();
+    const isBorrowed = l.type === 'borrowed';
+    const movType    = isBorrowed ? 'expense' : 'income';
+    const tipoTexto  = isBorrowed ? 'Pago préstamo devuelto' : 'Cobro préstamo';
+    const descripcion = `${tipoTexto} — ${l.person}${l.note ? ' · ' + l.note : ''}`;
+
+    // 1. Registrar movimiento (ingreso o egreso) en ft_movements
+    const { error: movErr } = await sb.from('ft_movements').insert({
+      id: movId,
+      user_id: currentUser,
+      org_id: 'default',
+      type: movType,
+      description: descripcion,
+      amount: l.amount,
+      move_date: fechaHoy,
+      origin: 'Préstamo saldado',
+      ref: `LOAN-${id.slice(-8).toUpperCase()}`,
+      source: 'loan_payment',
+      note: `Préstamo original: ${fmt(l.amount)} · Fecha: ${l.date}`
+    });
+
+    if (movErr) { toast('Error al registrar movimiento: ' + movErr.message, '❌'); return; }
+
+    // 2. Actualizar ft_loans con estado pagado + referencia al movimiento
+    const { error: loanErr } = await sb.from('ft_loans').update({
+      paid: true,
+      paid_at: new Date().toISOString(),
+      paid_by: currentUser,
+      income_movement_id: movId
+    }).eq('id', id);
+
+    if (loanErr) { toast('Error al actualizar préstamo', '❌'); return; }
+
+    // 3. Agregar el movimiento al estado local
+    const newMov = {
+      id: movId, type: movType, desc: descripcion,
+      amount: l.amount, date: fechaHoy,
+      origin: 'Préstamo saldado',
+      ref: `LOAN-${id.slice(-8).toUpperCase()}`,
+      source: 'loan_payment', createdBy: currentUser
+    };
+    movements.unshift(newMov);
+    filtered.unshift(newMov);
+
+    l.paid = true;
+    const toastMsg = isBorrowed
+      ? `✅ Préstamo saldado — Egreso de ${fmt(l.amount)} registrado`
+      : `✅ Préstamo saldado — Ingreso de ${fmt(l.amount)} registrado`;
+    toast(toastMsg);
+
+  } else {
+    // ── REACTIVAR: eliminar el ingreso de trazabilidad si existe ──
+    // Buscar el movimiento relacionado
+    const { data: loanData } = await sb.from('ft_loans').select('income_movement_id').eq('id', id).single();
+    
+    if (loanData?.income_movement_id) {
+      await sb.from('ft_movements').delete().eq('id', loanData.income_movement_id);
+      movements = movements.filter(m => m.id !== loanData.income_movement_id);
+      filtered  = filtered.filter(m => m.id !== loanData.income_movement_id);
+    }
+
+    const { error } = await sb.from('ft_loans').update({
+      paid: false, paid_at: null, paid_by: null, income_movement_id: null
+    }).eq('id', id);
+
+    if (error) { toast('Error al reactivar', '❌'); return; }
+    l.paid = false;
+    toast('↺ Préstamo reactivado — ingreso eliminado');
+  }
+
   // Sincronizar TODAS las pestañas
   renderLoans();
   renderDashboard();
+  renderMovTable(filtered);
   renderMovStats(filtered);
-  toast(newPaid ? '✓ Préstamo saldado — sumado al balance' : '↺ Préstamo reactivado');
 }
 
 async function deleteLoanRow(id, src) {
@@ -1817,8 +1994,8 @@ function closeAi() {
 // EXCEL IMPORT / EXPORT
 // ═══════════════════════════════════════════════════
 function exportExcel() {
-  const income = movements.filter(m => m.type === 'income');
-  const expense = movements.filter(m => m.type === 'expense');
+  const income = movements.filter(m => m.type === 'income'  && m.source !== 'loan_payment');
+  const expense = movements.filter(m => m.type === 'expense' && m.source !== 'loan_payment');
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['Tipo','Fecha','Descripción','Referencia','Origen','Monto'], ...movements.map(m => [m.type==='income'?'Ingreso':m.type==='expense'?'Egreso':'Préstamo',m.date,m.desc,m.ref||'',m.origin||'',m.amount])]), 'Movimientos');
   if (income.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['Fecha','Descripción','Monto'], ...income.map(m => [m.date,m.desc,m.amount])]), 'Ingresos');
